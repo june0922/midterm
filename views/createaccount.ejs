@@ -4,7 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create account</title>
-    <link rel="stylesheet" href="./createaccount.css">
+    <link rel="stylesheet" href="/public/css/createaccount.css">
+    <style>
+        .check-id-container {
+            display: flex;
+            align-items: center;
+        }
+        .check-id-container input {
+            flex: 1;
+        }
+        .check-id-container button {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 <body>
     <form id="create-account-form">
@@ -18,7 +30,15 @@
                 <td>아이디</td>
             </tr>
             <tr>
-                <td><input type="text" class="text id" name="id" required></td>
+                <td>
+                    <div class="check-id-container">
+                        <input type="text" class="text id" name="id" required>
+                        <button type="button" id="check-id-button">중복 확인</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span id="id-check-message" style="color: red;"></span></td>
             </tr>
             <tr>
                 <td>비밀번호</td>
@@ -59,7 +79,7 @@
                 </td>
             </tr>
             <tr>
-                <td><input type="submit" value="가입하기" class="btn"></td>
+                <td><input type="submit" value="가입하기" class="btn" disabled id="submit-button"></td>
             </tr>
         </table>
     </form>
@@ -68,8 +88,38 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            var idChecked = false;
+
+            $("#check-id-button").on("click", function () {
+                var ID = $(".id").val();
+                $.ajax({
+                    url: "/check-id",
+                    data: JSON.stringify({ id: ID }),
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (response) {
+                        if (response.exists) {
+                            $("#id-check-message").text("아이디가 이미 사용 중입니다.");
+                            idChecked = false;
+                        } else {
+                            $("#id-check-message").text("사용 가능한 아이디입니다.");
+                            idChecked = true;
+                            $("#submit-button").prop("disabled", false);
+                        }
+                    },
+                    error: function (err) {
+                        $("#id-check-message").text("아이디 중복 확인에 실패했습니다. 다시 시도해주세요.");
+                    }
+                });
+            });
+
             $("#create-account-form").on("submit", function (e) {
                 e.preventDefault();
+
+                if (!idChecked) {
+                    alert("아이디 중복 확인을 해주세요.");
+                    return false;
+                }
 
                 var ID = $(".id").val();
                 var PASSWORD = $(".pw").val();
@@ -91,34 +141,18 @@
                     email: EMAIL
                 };
 
-                // 아이디 중복 확인 요청
+                // 계정 생성 요청
                 $.ajax({
-                    url: "/check-id",
-                    data: JSON.stringify({ id: ID }),
+                    url: "/create-account",
+                    data: JSON.stringify(accountData),
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     success: function (response) {
-                        if (response.exists) {
-                            alert("아이디가 이미 사용 중입니다. 다른 아이디를 입력해주세요.");
-                        } else {
-                            // 아이디 중복 확인 후 계정 생성 요청
-                            $.ajax({
-                                url: "/create-account",
-                                data: JSON.stringify(accountData),
-                                type: "POST",
-                                contentType: "application/json; charset=utf-8",
-                                success: function (response) {
-                                    alert("계정이 성공적으로 생성되었습니다.");
-                                    window.location.href = "./login.html";
-                                },
-                                error: function (err) {
-                                    alert("계정 생성에 실패했습니다. 다시 시도해주세요.");
-                                }
-                            });
-                        }
+                        alert("계정이 성공적으로 생성되었습니다.");
+                        window.close();
                     },
                     error: function (err) {
-                        alert("아이디 중복 확인에 실패했습니다. 다시 시도해주세요.");
+                        alert("계정 생성에 실패했습니다. 다시 시도해주세요.");
                     }
                 });
             });

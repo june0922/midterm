@@ -17,10 +17,10 @@ sequelize = new Sequelize("LIG","root","744904",           /* 완전체로 seque
 })
 
 var db = {};                                  /* mainRouter 로 보내기위한 함수 */
-db.users = sequelize.import(__dirname + "/users.js");        /* user.db 가져오기 */
 
-/* db.stat = sequelize.import(__dirname + "/stat.js");        /* stat.db 가져오기 */ 
-/*db.quest = sequelize.import(__dirname + "/quest.js");        /* quest.db 가져오기 */
+db.users = sequelize.import(__dirname + "/users.js"); /* user.db 가져오기 */
+db.quests = sequelize.import(__dirname + "/quest.js"); /* quest.db 가져오기 */
+db.stats = sequelize.import(__dirname + "/stat.js"); /* stat.db 가져오기 */
 
 
 db.sequelize = sequelize;

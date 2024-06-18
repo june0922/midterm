@@ -1,34 +1,52 @@
 /* 스텟 테이블 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('stat', {
-        idx: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true, /* 자동 숫자 증가 */
-            primaryKey: true,            /* INTEGER */
-            allwNull: false        /* 오류감지 */
-        },
-        user_id: {
-            type: DataTypes.STRING(250)
-        },
-        LEVEL: {
-            type: DataTypes.INTEGER(250)
-        },
-        EXPERIENCE: {
-            type: DataTypes.INTEGER(250)
-        },  
-        STR: {
-            type: DataTypes.INTEGER(250)
-        },
-        DEX: {
-            type: DataTypes.INTEGER(250)
-        },
-        INT: {
-            type: DataTypes.INTEGER(250)
-        },
-        LUK: {
-            type: DataTypes.INTEGER(250)
-        }
-
-    })
-}
+    return sequelize.define('stats', {
+      idx: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+      },
+      id: {
+        type: DataTypes.STRING(250),
+        allowNull: false
+      },
+      level: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1
+      },
+      experience: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      expToNextLevel: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1 
+      },
+      str: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      dex: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      int: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      },
+      luk: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
+      }
+    });
+  };
+  

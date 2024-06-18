@@ -2,8 +2,8 @@
 /* 모든 폰트를 펜글씨체로 */
 * {
     font-family: "Nanum Pen Script", cursive;
-    font-weight: 400;
-    font-style: normal;
+    font-weight: bold;
+    font-size: normal;
     margin: 0;
     padding: 0;
     border: none;
@@ -177,8 +177,13 @@ body{
     font-size: 13rem;
     font-weight: 900;
 }
+#welcome-message{
+    color:rgb(168, 162, 65);
+    font-size: 5rem;
+    font-weight: 900;
+}
 /* 로그인 페이지 */
-#login-page{
+.login-page{
     border-radius: 30%;
   
     margin-left: 14%;
@@ -200,7 +205,7 @@ body{
   
 }
 
-#id-box{
+.id-box{
 
     font-size:1.5rem;
     font-weight: bold;
@@ -211,7 +216,7 @@ body{
     border-radius: 10%;
 
 }
-#id-box:hover{
+.id-box:focus{
         outline: 4px solid blueviolet;
 }
 /* 비밀번호 */
@@ -222,7 +227,7 @@ body{
   
 }
 
-#password-box{
+.password-box{
     font-size:1.5rem;
     font-weight: bold;
     width: 70%;
@@ -232,12 +237,10 @@ body{
     border-radius: 10%;
 }
 
-#password-box:focus{
+.password-box:focus{
     outline: 4px solid blueviolet;
 }
-#password-box:active{
-    outline: 4px solid blueviolet;
-}
+
 /* 제출버튼 */
 #signintext{
     background-color: rgb(41, 41, 138);
@@ -262,4 +265,9 @@ body{
 #createaccounttext:hover{
     cursor:pointer;
     color:rgb(218, 203, 121);
+}
+#error-message{
+    color:rgb(187, 53, 53);
+    font-size: 1.5rem;
+    font-weight: bold;
 }

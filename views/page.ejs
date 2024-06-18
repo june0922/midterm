@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>page1</title>
   <!-- page.css 연결 -->
-  <link rel="stylesheet" href="./page.css">
+  <link rel="stylesheet" href="/public/css/page.css">
   <!-- 웹폰트 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,7 +26,7 @@
       <!-- 왼쪽의 왼쪽 -->
       <div class="left-left-side">
         <!-- 캐릭터  -->
-        <div class="character-box"><img src="../img/avator.png"></div>
+        <div class="character-box"><img src="/public/img/avator.png"></div>
         <!-- 스테이터스  -->
         <div class="status">
           <!-- 레벨 -->
@@ -79,7 +79,7 @@
           <div class="text">Calendar</div>
           <div id="calendar"></div>
           <br>
-          <span>* 100%: circle / 70%: triangle  / Other Others : X  </span>
+          <span>* 100%: circle / 70%: triangle / Other Others : X </span>
         </div>
 
         <!-- 진행상황 상자 -->
@@ -148,23 +148,68 @@
 
   <!-- JavaScript 부분 -->
   <script>
-    let i = 0;
-    let level = 1;
-    let exp = 0;
-    let expToNextLevel = 1;
-    let totalQuests = 0;
-    let completedQuests = 0;
-    let currentQuestIndex = null;
+    let i;
+    let level;
+    let exp;
+    let expToNextLevel;
+    let totalQuests;
+    let completedQuests;
+    let currentQuestIndex;
 
-    // start 버튼 클릭 시 이벤트 핸들러
-    $("#start-btn").on("click", function (e) {
-      e.preventDefault();
-      $("#start").css({ "display": "none" });
-      $("body").addClass("bg");
-      setTimeout(function () {
-        $(".screen").css({ "display": "flex" });
-      }, 100);
+    $(document).ready(function () {
+      const userId = '<%= userId %>';
+      const stats = JSON.parse(decodeURIComponent($('body').data('stats')));
+      const quests = JSON.parse(decodeURIComponent($('body').data('quests')));
+
+      i = quests.currentQuestIndex;
+      level = stats.level;
+      exp = stats.experience;
+      expToNextLevel = stats.expToNextLevel;
+      totalQuests = quests.totalQuests;
+      completedQuests = quests.completedQuests;
+      currentQuestIndex = quests.currentQuestIndex;
+
+      // 유저 스탯 설정
+      $('#level').text(level);
+      $('#exp-bar').css('width', `${(exp / expToNextLevel) * 100}%`);
+      $('#str').text(stats.str);
+      $('#dex').text(stats.dex);
+      $('#int').text(stats.int);
+      $('#luk').text(stats.luk);
+
+      // 유저 퀘스트 설정
+      quests.entered_quests.forEach((quest, index) => {
+        let questHtml = `<div class="quest-box2 quest-number${index}" data-stat="${quest.stat}" data-grade="${quest.grade}" onclick="completeQuest(${index})";><span >${quest.name}</span><div>${quest.text}</div></div>`;
+        $(".right-middle").append(questHtml);
+      });
+
+      // 진행률 업데이트
+      updateProgress();
+
     });
+
+
+
+    /* 시작버튼 */
+    $(document).ready(function () {
+      $("#start-btn").on("click", function (e) {
+        e.preventDefault();
+        $("#start").css({ "display": "none" });
+        $("body").addClass("bg");
+        setTimeout(function () {
+          $(".screen").css({ "display": "flex" });
+        }, 1000);
+      });
+
+      $(".quest-box").on("click", function () {
+        popOpen();
+      });
+
+      $(".plus-box").on("click", function () {
+        popOpen();
+      });
+    });
+
 
 
     // 새로운 퀘스트 팝업 열기
@@ -181,25 +226,7 @@
       $(modalPop).hide();
     }
 
-    // 퀘스트 추가완료시 업데이트
-    function popUpdate() {
-      var name = $(".quest-name-plus").val();
-      var text = $(".quest-text-plus").val();
-      var stat = $(".quest-stat-plus").val();
-      var grade = $(".quest-grade-plus").val();
-      let quest = `<div class="quest-box2 quest-number${i}" data-stat="${stat}" data-grade="${grade}" onclick="completeQuest(${i})";><span >${name}</span><div>${text}</div></div>`;
-      $(".right-middle").append(quest);
-      var modalPop = $('.modal');
-      $(".screen").removeClass("blur");
-      $(modalPop).hide();
-      $(".quest-name-plus").val("");
-      $(".quest-text-plus").val("");
-      $(".quest-stat-plus").val("strength");
-      $(".quest-grade-plus").val("1");
-      i = i + 1;
-      totalQuests += 1;
-      updateProgress();
-    }
+
     // 퀘스트 완료 처리
     function completeQuest(index) {
       var questBox = $(`.quest-number${index}`);
@@ -277,7 +304,7 @@
       $(".screen").addClass("blur");
       modalPop.show();
     }
-
+    /* 퀘스트 완료 */
     function completeQuest(index) {
       var questBox = $(`.quest-number${index}`);
       var stat = questBox.data("stat");
@@ -304,7 +331,7 @@
       $(".screen").removeClass("blur");
       modalPop.hide();
     }
-
+    /* 생성된 퀘스트 클릭시 확대 */
     function popOpen() {
       var modalPop = $('.modal');
       $(".screen").addClass("blur");
@@ -334,24 +361,6 @@
       modalPop.show();
     }
 
-    $(document).ready(function () {
-      $("#start-btn").on("click", function (e) {
-        e.preventDefault();
-        $("#start").css({ "display": "none" });
-        $("body").addClass("bg");
-        setTimeout(function () {
-          $(".screen").css({ "display": "flex" });
-        }, 1000);
-      });
-
-      $(".quest-box").on("click", function () {
-        popOpen();
-      });
-
-      $(".plus-box").on("click", function () {
-        popOpen();
-      });
-    });
 
     // 진행률 업데이트
     function updateProgress() {
@@ -457,8 +466,7 @@
     }
 
     function getCompletionRate(day) {
-      // 여기에 목표 달성률을 계산하는 로직을 추가합니다.
-      // 예를 들어, 100을 반환하면 100% 달성, 70을 반환하면 70% 달성, 50을 반환하면 50% 달성.
+      //  100을 반환하면 100% 달성, 70을 반환하면 70% 달성, 50을 반환하면 50% 달성.
       // 현재는 임의의 값으로 테스트합니다.
       if (day % 2 === 0) {
         return 100; // 임시: 짝수 날은 100% 달성
@@ -522,7 +530,49 @@
         { date: dates[6], rate: 95 }
       ];
     }
+ // 로그아웃 처리
+ $(".logout-text").on("click", function (e) {
+        e.preventDefault();
+        saveData();
+      });
 
+      function saveData() {
+        const updatedStats = {
+          level,
+          experience: exp,
+          expToNextLevel,
+          str: parseInt($('#str').text()),
+          dex: parseInt($('#dex').text()),
+          int: parseInt($('#int').text()),
+          luk: parseInt($('#luk').text())
+        };
+
+        const updatedQuests = {
+          totalQuests,
+          completedQuests,
+          currentQuestIndex: i,
+          entered_quests: quests.entered_quests,
+          completed_quests: quests.completed_quests,
+          quest_progress: quests.quest_progress
+        };
+
+        $.ajax({
+          url: '/data/logout',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ stats: updatedStats, quests: updatedQuests }),
+          success: function (response) {
+            if (response.success) {
+              window.location.href = '/login';
+            } else {
+              alert('로그아웃 실패: ' + response.message);
+            }
+          },
+          error: function () {
+            alert('서버 오류가 발생했습니다.');
+          }
+        });
+      }
 
 
   </script>
