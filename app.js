@@ -1,26 +1,100 @@
-/* app 변수에 express 할당 */
 const express = require('express');
-const app = express();
-/* view engine ejs 사용 */
-const ejs = require("ejs");
-/* helmet (npn 제공 보안) */
 const helmet = require("helmet");
-app.use(helmet());
-/* post방식 api 설정을 위한 내용 */
-app.use(express.json());
-app.use(express.urlencoded());
-/* view engin은 ejs 사용 ,view 파일위치 명시 */
-app.set('view engine','ejs');
-app.set('views','./views'); 
-/* 화면에 필요한 도구들 찾기 위한 내용 */
+const mysql = require('mysql2');
+const app = express();
+const ejs = require("ejs")
+const dp = require('./model/db')
+
+ /* veiw engin ejs 사용 */
+app.set('veiw engine','ejs');
+app.set('views','/views');
 app.use('/public',express.static(__dirname + '/public'));
 
+app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded());
 
-/* 메인 라우터에서 주소 받기 */
 const mainRouter = require('./router/mainRouter')
-app.use('/',mainRouter)
+app.use('/',mainRouter);
 
-/* 서버 시작 */
+// MySQL 연결 설정
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password',
+    database: 'mydatabase'
+});
+
+db.connect((err) => {
+    if (err) {
+        throw err;
+    }
+    console.log('MySQL Connected...');
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+// EJS 설정
+app.set('view engine', 'ejs');
+ 
+// 라우트 설정
+app.get('/createaccount', (req, res) => {
+    res.render('createaccount');
+});
+
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+app.get('/page', (req, res) => {
+    res.render('page');
+});
+
+
+
+// 회원가입 라우트
+app.post('/create-account', (req, res) => {
+    const { id, password, name, birth, email } = req.body;
+    const sql = 'INSERT INTO users (id, password, name, birth, email) VALUES (?, ?, ?, ?, ?)';
+    db.query(sql, [id, password, name, birth, email], (err, result) => {
+        if (err) throw err;
+        res.send({ success: true });
+    });
+});
+
+// 아이디 중복 확인 라우트
+app.post('/check-id', (req, res) => {
+    const { id } = req.body;
+    const sql = 'SELECT * FROM users WHERE id = ?';
+    db.query(sql, [id], (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+            res.send({ exists: true });
+        } else {
+            res.send({ exists: false });
+        }
+    });
+});
+
+// 로그인 라우트
+app.post('/login', (req, res) => {
+    const { id, password } = req.body;
+    const sql = 'SELECT * FROM users WHERE id = ? AND password = ?';
+    db.query(sql, [id, password], (err, results) => {
+        if (err) throw err;
+        if (results.length > 0) {
+            res.send({ success: true });
+        } else {
+            res.send({ success: false, message: 'Invalid credentials' });
+        }
+    });
+});
+
+
+
 app.listen(3000,function(req,res){
-    console.log("서버가 실행되고 있다!")
+    db.sequlize.sync({force:false})
+    console.log("서버가 실행되고 있다")
 })

@@ -1,0 +1,265 @@
+
+/* 모든 폰트를 펜글씨체로 */
+* {
+    font-family: "Nanum Pen Script", cursive;
+    font-weight: 400;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+
+/* body 배경설정 */
+body{
+    margin : 0;
+    overflow: hidden;
+    background-color: white;
+    box-sizing: 100%;
+
+}
+/* 책상 겉부분 */
+.table-boundary{
+    border:1px solid black;
+    height: 100vh;
+    width: 100vw;
+    min-width:100vw;
+    min-height: 100vh;
+    border-radius: 70px;
+    background-color: rgba(95, 91, 84, 0.904);
+
+}
+/* 책상색 (로그인상황) */
+.table-bk{
+    width: 97%;
+    height: 95%;
+    border-radius: 70px;
+    border: 2px solid black;
+    background-color: rgba(160, 116, 39, 0.904);
+    position: absolute;
+    margin-top: 25px;
+    margin-left: 25px;
+
+}
+
+
+/* 페이지 색깔 */
+.page-bk{
+    background-color: rgb(240, 223, 178);
+   
+}
+/* 데이블 왼쪽 위 데코 */
+#table-deco1{
+    text-align: center;
+    width: 35%;
+    height: 10%;
+    background-color: rgba(95, 91, 84, 0.904);
+    z-index: 2;
+    position: absolute;
+    border-top-left-radius: 70px;
+    border-bottom-right-radius: 40px;
+    border-bottom:2px solid black;
+    border-right:2px solid black;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15),0 1px 3px rgba(0,0,0,0.3);
+    transition:box-shadow 0.3s cublic-bezier(.25,.8,.25,1);
+    vertical-align: centerz;
+
+}
+/* 테이블 왼쪽 위 데코 그림자처리 */
+#table-deco1:hover{
+    cursor: pointer;
+    box-shadow: 0 14px 28px 0 rgba(0,0,0,0.3), 0 10px 10px rgba(0,0,0,0.3);
+}
+
+/* 만든사람 */
+#madeby {
+    font-size: 3rem;
+}
+
+  /* 연필 , 지우개 */
+#img-pencil{
+    position: absolute;
+    margin-top: 300px;
+    margin-left: 400px;
+    width: 20%;
+    height: 70%;
+}
+/* 스프링 */
+#img-spring{
+    position: relative;
+
+    width: 150%;
+    height:140%;
+    margin-left:-40%;
+    margin-top:-20%;
+
+}
+/* 책 상자 (맨 뒷부분 기준) */
+#book-box{
+    background-color: rgb(41, 41, 138);
+    width: 30%;
+    height: 90%;
+    border-radius: 10px;
+    border:10px solid rgb(11, 11, 145);
+    position: absolute;
+    margin-top: 15px;
+    margin-left:50%;
+
+}
+/* 책 안쪽 페이지 */
+#book-deco1{
+
+    background-color: rgb(240, 223, 178);
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border-top:1px solid black;
+    position:absolute;
+    margin-top:1%;
+    margin-left:1%;
+}
+
+
+.nextbutton{
+    position: absolute;
+    background-color:  rgb(156, 32, 32);
+    width: 25%;
+    height: 20%;
+    margin-left: 80%;
+    margin-top: 50%;
+    z-index: 5;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border-top-right-radius: 5px;
+    border-top-right-radius: 5px;
+    border:5px solid rgb(165, 10, 10)
+}
+.nextbutton:hover{
+    cursor: pointer;
+}
+
+/* 책 앞 표지 */
+#book-deco2{
+    background-color: rgb(41, 41, 138);
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    border:10px solid rgb(11, 11, 145);
+    position: absolute;
+    margin-top:1%;
+    margin-left:1%;
+    box-shadow: 0 3px 7px rgba(0,0,0,0.15),0 3px 7px rgba(0,0,0,0.3),0 3px 7px rgba(0,0,0,0.8);
+    transition:box-shadow 0.3s cublic-bezier(.25,.8,.25,1);
+    transition: 0.3s;
+
+}
+#book-deco2:hover{
+    box-shadow: 0 0 18px 3px rgba(0,0,0,0.3), 0 10px 10px rgba(0,0,0,0.3),  0 15px 14px rgba(0,0,0,0.6)
+}
+
+
+/* 로그인 박스 */
+#login-box {
+    vertical-align: top;
+    text-align: center;
+    width: 90%;
+    height: 90%;  
+    margin-top: 5%;
+    margin-left: 5%;
+    border-radius:5px;
+    border: 5px solid blueviolet;
+    position: absolute;
+    z-index: 4;
+}
+/* 책 제목 */
+#title{
+    color:blueviolet;
+    font-size: 13rem;
+    font-weight: 900;
+}
+/* 로그인 페이지 */
+#login-page{
+    border-radius: 30%;
+  
+    margin-left: 14%;
+    width:70%;
+    height:60%;
+    border:5px solid blueviolet;
+}
+/* 로그인text */
+#login{
+    font-size: 4rem;
+    font-weight: bold;
+
+}
+/* 아이디 */
+#IDtext{
+    margin-top: 3%;
+    font-size: 2rem;
+    font-weight: bold;
+  
+}
+
+#id-box{
+
+    font-size:1.5rem;
+    font-weight: bold;
+    width: 70%;
+    height: 8%;
+    background-color:rgb(41, 41, 138);
+    border-bottom: 5px solid black;
+    border-radius: 10%;
+
+}
+#id-box:hover{
+        outline: 4px solid blueviolet;
+}
+/* 비밀번호 */
+#passwordtext{
+    margin-top: 3%;
+    font-size:2rem;
+    font-weight: bold;
+  
+}
+
+#password-box{
+    font-size:1.5rem;
+    font-weight: bold;
+    width: 70%;
+    height: 8%;
+    background-color:rgb(41, 41, 138);
+    border-bottom: 5px solid black;
+    border-radius: 10%;
+}
+
+#password-box:focus{
+    outline: 4px solid blueviolet;
+}
+#password-box:active{
+    outline: 4px solid blueviolet;
+}
+/* 제출버튼 */
+#signintext{
+    background-color: rgb(41, 41, 138);
+    margin-left: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration:underline;
+}
+/* 계정생성 */
+#createaccounttext{
+    background-color: rgb(41, 41, 138);
+    margin-top: 1%;
+    margin-left: 30%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration:underline;
+}
+#signintext:hover{
+    cursor: pointer;
+    color:rgb(218, 203, 121);
+}
+#createaccounttext:hover{
+    cursor:pointer;
+    color:rgb(218, 203, 121);
+}

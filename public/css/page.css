@@ -1,0 +1,611 @@
+/* 배경 색 */
+.bg {
+    transition: 1s;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(217, 209, 178);
+    background-image: linear-gradient(90deg, transparent 50%, #eaa24b 50.5%, #85989c 81px, transparent 81px), linear-gradient(#ebc291 .1em, transparent .1em);
+    background-size: 100% 1.2em;
+}
+
+/* 모든 폰트를 펜글씨체로 */
+* {
+    font-size: 1.3rem;
+    font-family: "Nanum Pen Script", cursive;
+    font-weight: 400;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+}
+
+/* 시작버튼 상자 */
+#start {
+    height: 98vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 시작버튼 */
+#start-btn {
+    font-size: 5rem;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15), 0 3px 7px rgba(0, 0, 0, 0.3), 0 3px 7px rgba(0, 0, 0, 0.8);
+    transition: box-shadow 0.5s cublic-bezier(.25, .8, .25, 1);
+    transition: 0.5s;
+}
+
+#start-btn:hover {
+    color: white;
+    background-color: rgb(207, 61, 61);
+    cursor: pointer;
+    box-shadow: 0 0 18px 3px rgba(0, 0, 0, 0.3), 0 10px 10px rgba(0, 0, 0, 0.3), 0 15px 14px rgba(0, 0, 0, 0.6)
+}
+
+#start-btn:active {
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15), 0 3px 7px rgba(0, 0, 0, 0.3), 0 3px 7px rgba(0, 0, 0, 0.8);
+    transition: box-shadow 0.3s cublic-bezier(.25, .8, .25, 1);
+    transition: 0.5s;
+}
+
+/* 시작버튼 호버효과 */
+#btn:hover {
+    color: navy;
+    background-color: blueviolet;
+}
+
+/* 전체 화면 */
+.screen {
+    display: none;
+    box-sizing: border-box;
+}
+
+.screen::-webkit-scrollbar {
+    width: 10px;
+    background-color: transparent;
+}
+
+.screen::-webkit-scrollbar-thumb {
+    background-color: #a19e9b;
+    border-radius: 5px;
+}
+
+/* 왼쪽 사이드 부분 */
+.left-side {
+    height: 98vh;
+    width: 50%;
+    box-sizing: border-box;
+    display: flex;
+}
+
+/* 왼쪽의 왼쪽부분 */
+.left-left-side {
+    width: 50%;
+    height: 100%;
+}
+
+/* 캐릭터 상자*/
+.character-box {
+    text-align: center;
+    width: 100%;
+    height: 60%;
+    box-sizing: border-box;
+    border-right: 5px dashed rgb(77, 66, 66);
+    border-bottom: 5px dashed rgb(77, 66, 66);
+    background-image: no-repeat;
+    background-size: cover;
+}
+
+/* 스테이터스 상자 */
+.status {
+    height: 40%;
+    width: 100%;
+    box-sizing: border-box;
+    border-right: 5px dashed rgb(77, 66, 66);
+}
+
+/* 경험치바 */
+#exp-bar {
+    display: inline-block;
+    margin: 10px;
+    height: 7px;
+    width: 200px;
+    background-color: aquamarine;
+}
+
+/* 스탯 */
+.stat-box {
+    box-sizing: border-box;
+    height: 16.5%;
+    width: 100%;
+    padding-bottom: 10px;
+    padding-left: 5%;
+}
+
+/* 스탯 항목 */
+.stat-item {
+    display: flex;
+    align-items: center;
+}
+
+/* 스탯 텍스트 */
+.stat-text {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+/* 스탯 값 */
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* 왼쪽의 오른쪽 부분 */
+.left-right-side {
+    box-sizing: border-box;
+    width: 50%;
+    height: 100%;
+    text-align: center;
+}
+
+/* 텍스트 크기 설정 */
+.text {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* 달력 상자 */
+.calendar-box {
+    height: 55%;
+    width: 100%;
+    border-bottom: 5px dashed rgb(77, 66, 66);
+    padding: 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* 넘침 방지 */
+}
+
+/* 달력 스타일 */
+#calendar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* 전체 너비 사용 */
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.calendar-header div {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 5px;
+    width: 100%;
+    /* 전체 너비 사용 */
+}
+
+.calendar-day {
+    width: 100%;
+    /* 부모의 너비에 맞춤 */
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    font-size: 1rem;
+    position: relative;
+}
+
+.calendar-day.circle::after {
+    content: 'O';
+    position: absolute;
+    font-size: 1.2rem;
+    color: green;
+}
+
+.calendar-day.triangle::after {
+    content: '△';
+    position: absolute;
+    font-size: 1.2rem;
+    color: orange;
+}
+
+.calendar-day.cross::after {
+    content: 'X';
+    position: absolute;
+    font-size: 1.2rem;
+    color: red;
+}
+
+
+/* 진행상황 상자 */
+.progress-box {
+    height: 15%;
+    width: 100%;
+    border-bottom: 5px dashed rgb(77, 66, 66);
+    position: relative;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* 진행률 컨테이너 */
+#progress-container {
+    width: 100%;
+    height: 30px;
+    background-color: rgb(217, 209, 178);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 10px;
+}
+
+/* 진행률 바 */
+#progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: limegreen;
+    transition: width 0.5s;
+}
+
+/* 진행률 텍스트 */
+#progress-text {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: black;
+    z-index: 1;
+}
+
+
+/* 기록 상자 */
+.history-box {
+    height: 30%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+#achievementChart {
+    width: 100%;
+    height: 100%;
+}
+
+/* 오른쪽 사이드 */
+.right-side {
+    height: 98vh;
+    margin-left: 0.5%;
+    width: 49%;
+    box-sizing: border-box;
+}
+
+/* 오른쪽 위 */
+.right-top {
+    height: 10%;
+    width: 100%;
+}
+
+/* 과제 상자 */
+.quest-box-text {
+    text-align: center;
+    width: 90%;
+    height: 100%;
+    font-size: 3rem;
+    font-weight: bold;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+/* 로그아웃 상자 */
+.logout-text {
+    width: 8%;
+    height: 35%;
+    font-size: 0.7rem;
+    font-weight: bold;
+    box-sizing: border-box;
+    border: 4px solid black;
+    display: inline-block;
+    text-align: center;
+    padding-top: 5px;
+    border-radius: 10%;
+    background-color: #5dc467;
+}
+
+/* 로그아웃 상자 호버효과 */
+.logout-text:hover {
+    background-color: rgb(51, 41, 41);
+    border: 4px solid white;
+    color: white;
+    cursor: pointer;
+}
+
+/* 오른쪽 중간 부분 */
+.right-middle {
+    font-size: 2rem;
+    font-weight: bold;
+    box-sizing: border-box;
+    width: 100%;
+    height: 80%;
+    overflow: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.right-middle::-webkit-scrollbar {
+    width: 10px;
+    background-color: transparent;
+}
+
+.right-middle::-webkit-scrollbar-thumb {
+    background-color: #eaa24b;
+    border-radius: 5px;
+}
+
+/* 퀘스트 박스 */
+.quest-box,
+.quest-box2 {
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    height: 40%;
+    margin-left: 6%;
+    margin-bottom: 20px;
+    background: rgb(213, 142, 55);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.quest-box:hover,
+.quest-box2:hover {
+    background: #342e27;
+    color: black;
+}
+
+.plus-mark {
+    font-size: 4rem;
+    margin-top: 15%;
+    color: rgb(82, 78, 78);
+}
+
+/* 팝업 스타일 */
+.modal {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: #dbc049;
+    z-index: 1000;
+    border: 3px solid black;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+.quest-plus {
+    width: 100%;
+    height: 100%;
+    background: #dbc049;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 블러처리 클래스 */
+.blur {
+    filter: blur(3px);
+}
+
+/* 과제 제목 기입 */
+.quest-name-plus {
+    box-sizing: border-box;
+    background-color: transparent;
+    width: 100%;
+    height: 100px;
+    outline: none;
+    padding-left: 5px;
+    font-weight: bold;
+    border: 0;
+    border-bottom: 1px solid rgb(216, 121, 57);
+}
+
+/* 과제 내용 기입 */
+.quest-text-plus {
+    box-sizing: border-box;
+    border-top: #eaa24b;
+    background-color: transparent;
+    width: 100%;
+    height: 200px;
+    outline: none;
+    padding-top: 10px;
+    padding-left: 5px;
+    border: 0;
+    margin-bottom: 20px;
+}
+
+.quest-text-plus::-webkit-scrollbar {
+    width: 10px;
+    background-color: transparent;
+}
+
+.quest-text-plus::-webkit-scrollbar-thumb {
+    background-color: #eaa24b;
+    border-radius: 5px;
+}
+
+/* select 요소 스타일 */
+.quest-stat-plus,
+.quest-grade-plus {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #eaa24b;
+    background-color: transparent;
+    font-family: "Nanum Pen Script", cursive;
+    font-size: 1.5rem;
+    padding: 5px;
+    margin-bottom: 20px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* 추가 및 취소 버튼 */
+.plus-box,
+.cancel-box {
+    text-align: center;
+    border: 3px solid black;
+    background-color: yellowgreen;
+    font-weight: bold;
+    float: right;
+    border-radius: 8px;
+    height: 50px;
+    line-height: 50px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.plus-box:hover,
+.cancel-box:hover {
+    background-color: rgb(51, 41, 41);
+    border: 3px solid white;
+    color: white;
+}
+/* 모달 퀘스트 */
+.modal-quest {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.modal-quest-stat-grade {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+/* 모달 퀘스트 제목 */
+.modal-quest-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+/* 모달 퀘스트 내용 */
+.modal-quest-text {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.complete-box,
+.close-box {
+    text-align: center;
+    border: 3px solid black;
+    background-color: yellowgreen;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.complete-box:hover,
+.close-box:hover {
+    background-color: rgb(51, 41, 41);
+    border: 3px solid white;
+    color: white;
+}
+
+.completed {
+    background-color: rgb(165, 154, 154);
+    position: relative;
+    pointer-events: none;
+    /* 클릭 불가 설정 */
+}
+
+.completed::before {
+    content: 'O';
+    color: green;
+    font-size: 2rem;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+
+/* 오른쪽 바닥 부분 */
+.right-bottom {
+    font-size: 2rem;
+    font-weight: bold;
+    box-sizing: border-box;
+    width: 100%;
+    height: 8%;
+}
+
+/* 레이아웃을 위한 빈공간 */
+.blank {
+    width: 84%;
+    height: 100%;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+/* 다음으로 가는 버튼 */
+.nextbutton {
+    font-size: 2rem;
+    font-weight: bold;
+    box-sizing: border-box;
+    width: 14%;
+    height: 100%;
+    vertical-align: top;
+    display: inline-block;
+    text-align: center;
+}
+
+.nextbutton:hover {
+    font-size: 2.4rem;
+    color: yellowgreen;
+    cursor: pointer;
+}
+
+/* 경험치바 */
+#exp-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: rgb(217, 209, 178);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+#exp-bar {
+    height: 100%;
+    width: 0;
+    background-color: limegreen;
+    transition: width 0.5s;
+}

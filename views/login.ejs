@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- 기본설정 (인코딩, 디바이스화면, 타이틀명) -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIG</title>
+
+    <!-- 웹폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+
+    <!-- main.css 연결 -->
+    <link rel="stylesheet" href="./login.css">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+        .highlight {
+            background-color: yellow;
+            /* 강조 색상 */
+            border: 3px solid red;
+            /* 강조 테두리 */
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 테이블 경계회색영역 -->
+    <div class="table-boundary">
+
+        <!-- 테이블 안쪽갈색영역 -->
+        <div class="screen table-bk">
+
+            <!-- 테이블 왼쪽위 회색영역 -->
+            <div id="table-deco1" onclick="gogit();"> <span id="madeby"> made by 12211726 황민준</span></div>
+            <!-- 연필, 지우개 사진 -->
+            <img src="../img/Pencil.png" id="img-pencil">
+            <!-- 책부분(뒷부분기준) -->
+            <div class="container" id="book-box">
+
+                <!-- 책 입체적으로 보이기 위한 데코1(흰종이),(앞부분)2,스프링사진 -->
+
+                <div id="book-deco1">
+                    <div id="book-deco1">
+                        <div id="book-deco1">
+                            <div id="book-deco1">
+                                <div id="book-deco1">
+                                    <div id="book-deco2">
+                                        <!-- 책갈피 부분(다음으로 넘어가기 위한 버튼) -->
+                                        <section>
+                                            <div class="nextbutton hidden" id="next-button" onclick="startpage()">다음
+                                            </div>
+                                        </section>
+                                        <!-- 로그인 박스 -->
+                                        <div id="login-box">
+                                            <!-- 책 제목 -->
+                                            <span id="title"><b>LIG</b></span>
+                                            <!-- 로그인 페이지 -->
+                                            <form method="post" id="login-form">
+                                                <br><br>
+                                                <div id="login"> LOGIN </div> <br>
+                                                <!-- 아이디 부분 -->
+                                                <div id="IDtext">ID</div>
+
+                                                <input id="id" type="text" placeholder="Enter ID" required autofocus
+                                                    autocomplete="off">
+
+                                                <br><br>
+                                                <!-- 페스워드 부분 -->
+                                                <div id="passwordtext">PASSWARD</div>
+
+                                                <input type="password" id="password" placeholder="Enter PASSWARD"
+                                                    required>
+
+                                                <br> <br>
+                                                <button type="submit" id="signintext">Sign in</button>
+                                                <button type="button" id="createaccounttext" onclick="account()">Create
+                                                    account</button>
+                                                <div id="error-message"></div>
+                                            </form>
+                                            <div id="welcome-message" class="hidden"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <img src="../img/spring.PNG" id="img-spring">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+
+    <!-- 자바 스크립트 부분 -->
+    <script>
+        $(document).ready(function () {
+            $('#login-form').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/login',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        id: $('#id').val(),
+                        password: $('#password').val()
+                    }),
+                    success: function (response) {
+                        if (response.success) {
+                            $('#login-form').hide();
+                            $('#welcome-message').text(response.name + '님 반갑습니다.').removeClass('hidden');
+                            $('#next-button').removeClass('hidden').addClass('highlight');
+                        } else {
+                            $('#error-message').text('로그인 실패: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        $('#error-message').text('서버 오류가 발생했습니다.');
+                    }
+                });
+            });
+        });
+
+        function gogit() {
+            window.location.href = "https://github.com/june0922/midterm";
+        }
+
+        function startpage() {
+            window.location.href = "./page.html";
+        }
+
+        function account() {
+            window.open(
+                "./createaccount.html",
+                "account",
+                "width=400, height=600,top=100,left=100"
+            );
+        }
+    </script>
+
+</body>
+
+</html>
