@@ -1,47 +1,49 @@
-/* 퀘스트 테이블 */
-
+/* 퀘스트테이블 */
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('quests', {
-      idx: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false
-      },
-      id: {
-        type: DataTypes.STRING(250),
-        allowNull: false
-      },
-      entered_quests: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: []
-      },
-      completed_quests: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: []
-      },
-      quest_progress: {
-        type: DataTypes.JSON,
-        allowNull: false,
-        defaultValue: {}
-      },
-      totalQuests: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-      },
-      completedQuests: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-      },
-      currentQuestIndex: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
-      }
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        completedQuests: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        totalQuests: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        inProgressQuests: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        progress: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        questNumber: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        questTitle: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        questText: {
+            type: DataTypes.TEXT,
+            allowNull: false
+        },
+        stat: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        grade: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        date: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
     });
-  };
-  
+};

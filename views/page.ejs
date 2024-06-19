@@ -146,436 +146,387 @@
   <!-- chart.js 라이브러리 : 선그래프를 위해 -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- JavaScript 부분 -->
-  <script>
-    let i;
-    let level;
-    let exp;
-    let expToNextLevel;
-    let totalQuests;
-    let completedQuests;
-    let currentQuestIndex;
 
-    $(document).ready(function () {
-      const userId = '<%= userId %>';
-      const stats = JSON.parse(decodeURIComponent($('body').data('stats')));
-      const quests = JSON.parse(decodeURIComponent($('body').data('quests')));
+ <!-- JavaScript 부분 -->
+ <script>
+  let i = 0;
+  let level = 1;
+  let exp = 0;
+  let expToNextLevel = 1;
+  let totalQuests = 0;
+  let completedQuests = 0;
+  let currentQuestIndex = null;
 
-      i = quests.currentQuestIndex;
-      level = stats.level;
-      exp = stats.experience;
-      expToNextLevel = stats.expToNextLevel;
-      totalQuests = quests.totalQuests;
-      completedQuests = quests.completedQuests;
-      currentQuestIndex = quests.currentQuestIndex;
-
-      // 유저 스탯 설정
-      $('#level').text(level);
-      $('#exp-bar').css('width', `${(exp / expToNextLevel) * 100}%`);
-      $('#str').text(stats.str);
-      $('#dex').text(stats.dex);
-      $('#int').text(stats.int);
-      $('#luk').text(stats.luk);
-
-      // 유저 퀘스트 설정
-      quests.entered_quests.forEach((quest, index) => {
-        let questHtml = `<div class="quest-box2 quest-number${index}" data-stat="${quest.stat}" data-grade="${quest.grade}" onclick="completeQuest(${index})";><span >${quest.name}</span><div>${quest.text}</div></div>`;
-        $(".right-middle").append(questHtml);
-      });
-
-      // 진행률 업데이트
-      updateProgress();
-
-    });
+  // start 버튼 클릭 시 이벤트 핸들러
+  $("#start-btn").on("click", function (e) {
+    e.preventDefault();
+    $("#start").css({ "display": "none" });
+    $("body").addClass("bg");
+    setTimeout(function () {
+      $(".screen").css({ "display": "flex" });
+    }, 100);
+  });
 
 
+  // 새로운 퀘스트 팝업 열기
+  function popOpen() {
+    var modalPop = $('.modal');
+    $(".screen").addClass("blur");
+    $(modalPop).show();
+  }
 
-    /* 시작버튼 */
-    $(document).ready(function () {
-      $("#start-btn").on("click", function (e) {
-        e.preventDefault();
-        $("#start").css({ "display": "none" });
-        $("body").addClass("bg");
-        setTimeout(function () {
-          $(".screen").css({ "display": "flex" });
-        }, 1000);
-      });
+  // 새로운 퀘스트 팝업 닫기
+  function popClose() {
+    var modalPop = $('.modal');
+    $(".screen").removeClass("blur");
+    $(modalPop).hide();
+  }
 
-      $(".quest-box").on("click", function () {
-        popOpen();
-      });
-
-      $(".plus-box").on("click", function () {
-        popOpen();
-      });
-    });
-
-
-
-    // 새로운 퀘스트 팝업 열기
-    function popOpen() {
-      var modalPop = $('.modal');
-      $(".screen").addClass("blur");
-      $(modalPop).show();
-    }
-
-    // 새로운 퀘스트 팝업 닫기
-    function popClose() {
-      var modalPop = $('.modal');
-      $(".screen").removeClass("blur");
-      $(modalPop).hide();
-    }
-
-
-    // 퀘스트 완료 처리
-    function completeQuest(index) {
-      var questBox = $(`.quest-number${index}`);
-      var stat = questBox.data("stat");
-      var grade = parseInt(questBox.data("grade"));
-      var statValue = parseInt($(`#${stat}`).text());
-      $(`#${stat}`).text(statValue + grade);
-      exp += 1;
-      if (exp >= expToNextLevel) {
-        levelUp();
-      } else {
-        updateExpBar();
-      }
-      completedQuests += 1;
-      updateProgress();
-      questBox.remove();
-    }
-
-
-
-    /* 입력 바탕으로 업데이트 */
-    function popUpdate() {
-      var name = $(".quest-name-plus").val();
-      var text = $(".quest-text-plus").val();
-      var stat = $(".quest-stat-plus").val();
-      var grade = $(".quest-grade-plus").val();
-
-      // 등급과 목표스텟 표시
-      var statText = stat.toUpperCase() + " : " + (grade === "1" ? "C(+1)" : grade === "2" ? "B(+2)" : "A(+3)");
-
-      let quest = `
-    <div class="quest-box2 quest-number${i}" data-stat="${stat}" data-grade="${grade}" onclick="showQuest(${i})">
-      <div class="quest-stat-grade">${statText}</div>
-      <div class="quest-title">${name}</div>
-      <div class="quest-text">${text}</div>
-    </div>`;
-
-      $(".right-middle").append(quest);
-
-      // 모달 창 닫기 및 초기화
-      var modalPop = $('.modal');
-      $(".screen").removeClass("blur");
-      $(modalPop).hide();
-      $(".quest-name-plus").val("");
-      $(".quest-text-plus").val("");
-      $(".quest-stat-plus").val("strength");
-      $(".quest-grade-plus").val("1");
-      i = i + 1;
-      totalQuests += 1;
-      updateProgress();
-    }
-
-    function showQuest(index) {
-      currentQuestIndex = index;
-      var questBox = $(`.quest-number${index}`);
-      if (questBox.hasClass('completed')) return; // 완료된 퀘스트는 클릭 불가
-
-      var name = questBox.find(".quest-title").text();
-      var text = questBox.find(".quest-text").text();
-      var stat = questBox.data("stat");
-      var grade = questBox.data("grade");
-      var statText = stat.toUpperCase() + " : " + (grade === "1" ? "C(+1)" : grade === "2" ? "B(+2)" : "A(+3)");
-
-      var modalContent = `
-    <div class="modal-quest">
-      <div class="modal-quest-stat-grade">${statText}</div>
-      <div class="modal-quest-title">${name}</div>
-      <div class="modal-quest-text">${text}</div>
-      <button class="complete-box" onClick="completeQuest(${index})">Complete</button>
-      <button class="close-box" onClick="closeQuestModal()">Close</button>
-    </div>`;
-
-      var modalPop = $('.modal');
-      modalPop.html(modalContent);
-      $(".screen").addClass("blur");
-      modalPop.show();
-    }
-    /* 퀘스트 완료 */
-    function completeQuest(index) {
-      var questBox = $(`.quest-number${index}`);
-      var stat = questBox.data("stat");
-      var grade = parseInt(questBox.data("grade"));
-      var statValue = parseInt($(`#${stat}`).text());
-      $(`#${stat}`).text(statValue + grade);
-      exp += 1;
-      if (exp >= expToNextLevel) {
-        levelUp();
-      } else {
-        updateExpBar();
-      }
-      completedQuests += 1;
-      updateProgress();
-      questBox.addClass("completed"); // 추가된 CSS 클래스
-      questBox.off('click'); // 클릭 이벤트 제거
-
-      // 모달 창 닫기
-      closeQuestModal();
-    }
-    /* 모달 닫기 */
-    function closeQuestModal() {
-      var modalPop = $('.modal');
-      $(".screen").removeClass("blur");
-      modalPop.hide();
-    }
-    /* 생성된 퀘스트 클릭시 확대 */
-    function popOpen() {
-      var modalPop = $('.modal');
-      $(".screen").addClass("blur");
-
-      var modalContent = `
-    <div class="quest-top">
-      <input class="quest-name-plus" type="text" placeholder="제목입력">
-      <textarea class="quest-text-plus" placeholder="tip.최대한 구체적으로 현실성 있게 계획하세요~"></textarea>
-      <select class="quest-stat-plus">
-        <option value="str">근력</option>
-        <option value="dex">민첩</option>
-        <option value="int">지능</option>
-        <option value="luk">운</option>
-      </select>
-      <select class="quest-grade-plus">
-        <option value="1">C(+1)</option>
-        <option value="2">B(+2)</option>
-        <option value="3">A(+3)</option>
-      </select>
-    </div>
-    <div class="quest-bottom">
-      <button class="cancel-box modal-close" onClick="closeQuestModal()">Cancel</button>
-      <button class="plus-box modal-close" onClick="popUpdate()">Plus</button>
-    </div>`;
-
-      modalPop.html(modalContent);
-      modalPop.show();
-    }
-
-
-    // 진행률 업데이트
-    function updateProgress() {
-      let progressPercentage = (completedQuests / totalQuests) * 100;
-      $("#progress-bar").css("width", progressPercentage + "%");
-      $("#progress-text").text(`${progressPercentage.toFixed(2)}% (${completedQuests}/${totalQuests})`);
-    }
-
-    // 레벨업 처리
-    function levelUp() {
-      level += 1;
-      exp = 0;
-      expToNextLevel += 1;
-      $("#level").text(level);
+  // 퀘스트 추가완료시 업데이트
+  function popUpdate() {
+    var name = $(".quest-name-plus").val();
+    var text = $(".quest-text-plus").val();
+    var stat = $(".quest-stat-plus").val();
+    var grade = $(".quest-grade-plus").val();
+    let quest = `<div class="quest-box2 quest-number${i}" data-stat="${stat}" data-grade="${grade}" onclick="completeQuest(${i})";><span >${name}</span><div>${text}</div></div>`;
+    $(".right-middle").append(quest);
+    var modalPop = $('.modal');
+    $(".screen").removeClass("blur");
+    $(modalPop).hide();
+    $(".quest-name-plus").val("");
+    $(".quest-text-plus").val("");
+    $(".quest-stat-plus").val("strength");
+    $(".quest-grade-plus").val("1");
+    i = i + 1;
+    totalQuests += 1;
+    updateProgress();
+  }
+  // 퀘스트 완료 처리
+  function completeQuest(index) {
+    var questBox = $(`.quest-number${index}`);
+    var stat = questBox.data("stat");
+    var grade = parseInt(questBox.data("grade"));
+    var statValue = parseInt($(`#${stat}`).text());
+    $(`#${stat}`).text(statValue + grade);
+    exp += 1;
+    if (exp >= expToNextLevel) {
+      levelUp();
+    } else {
       updateExpBar();
     }
+    completedQuests += 1;
+    updateProgress();
+    questBox.remove();
+  }
 
-    // 경험치 바 업데이트
-    function updateExpBar() {
-      var expPercentage = (exp / expToNextLevel) * 100;
-      $("#exp-bar").css("width", expPercentage + "%");
+
+
+  /* 입력 바탕으로 업데이트 */
+  function popUpdate() {
+    var name = $(".quest-name-plus").val();
+    var text = $(".quest-text-plus").val();
+    var stat = $(".quest-stat-plus").val();
+    var grade = $(".quest-grade-plus").val();
+
+    // 등급과 목표스텟 표시
+    var statText = stat.toUpperCase() + " : " + (grade === "1" ? "C(+1)" : grade === "2" ? "B(+2)" : "A(+3)");
+
+    let quest = `
+  <div class="quest-box2 quest-number${i}" data-stat="${stat}" data-grade="${grade}" onclick="showQuest(${i})">
+    <div class="quest-stat-grade">${statText}</div>
+    <div class="quest-title">${name}</div>
+    <div class="quest-text">${text}</div>
+  </div>`;
+
+    $(".right-middle").append(quest);
+
+    // 모달 창 닫기 및 초기화
+    var modalPop = $('.modal');
+    $(".screen").removeClass("blur");
+    $(modalPop).hide();
+    $(".quest-name-plus").val("");
+    $(".quest-text-plus").val("");
+    $(".quest-stat-plus").val("strength");
+    $(".quest-grade-plus").val("1");
+    i = i + 1;
+    totalQuests += 1;
+    updateProgress();
+  }
+
+  function showQuest(index) {
+    currentQuestIndex = index;
+    var questBox = $(`.quest-number${index}`);
+    if (questBox.hasClass('completed')) return; // 완료된 퀘스트는 클릭 불가
+
+    var name = questBox.find(".quest-title").text();
+    var text = questBox.find(".quest-text").text();
+    var stat = questBox.data("stat");
+    var grade = questBox.data("grade");
+    var statText = stat.toUpperCase() + " : " + (grade === "1" ? "C(+1)" : grade === "2" ? "B(+2)" : "A(+3)");
+
+    var modalContent = `
+  <div class="modal-quest">
+    <div class="modal-quest-stat-grade">${statText}</div>
+    <div class="modal-quest-title">${name}</div>
+    <div class="modal-quest-text">${text}</div>
+    <button class="complete-box" onClick="completeQuest(${index})">Complete</button>
+    <button class="close-box" onClick="closeQuestModal()">Close</button>
+  </div>`;
+
+    var modalPop = $('.modal');
+    modalPop.html(modalContent);
+    $(".screen").addClass("blur");
+    modalPop.show();
+  }
+
+  function completeQuest(index) {
+    var questBox = $(`.quest-number${index}`);
+    var stat = questBox.data("stat");
+    var grade = parseInt(questBox.data("grade"));
+    var statValue = parseInt($(`#${stat}`).text());
+    $(`#${stat}`).text(statValue + grade);
+    exp += 1;
+    if (exp >= expToNextLevel) {
+      levelUp();
+    } else {
+      updateExpBar();
     }
-    /* 달력을 위한 정보 */
-    document.addEventListener("DOMContentLoaded", function () {
-      generateCalendar();
-      updateCalendar();
-      renderAchievementChart();
+    completedQuests += 1;
+    updateProgress();
+    questBox.addClass("completed"); // 추가된 CSS 클래스
+    questBox.off('click'); // 클릭 이벤트 제거
+
+    // 모달 창 닫기
+    closeQuestModal();
+  }
+  /* 모달 닫기 */
+  function closeQuestModal() {
+    var modalPop = $('.modal');
+    $(".screen").removeClass("blur");
+    modalPop.hide();
+  }
+
+  function popOpen() {
+    var modalPop = $('.modal');
+    $(".screen").addClass("blur");
+
+    var modalContent = `
+  <div class="quest-top">
+    <input class="quest-name-plus" type="text" placeholder="제목입력">
+    <textarea class="quest-text-plus" placeholder="tip.최대한 구체적으로 현실성 있게 계획하세요~"></textarea>
+    <select class="quest-stat-plus">
+      <option value="str">근력</option>
+      <option value="dex">민첩</option>
+      <option value="int">지능</option>
+      <option value="luk">운</option>
+    </select>
+    <select class="quest-grade-plus">
+      <option value="1">C(+1)</option>
+      <option value="2">B(+2)</option>
+      <option value="3">A(+3)</option>
+    </select>
+  </div>
+  <div class="quest-bottom">
+    <button class="cancel-box modal-close" onClick="closeQuestModal()">Cancel</button>
+    <button class="plus-box modal-close" onClick="popUpdate()">Plus</button>
+  </div>`;
+
+    modalPop.html(modalContent);
+    modalPop.show();
+  }
+
+  $(document).ready(function () {
+    $("#start-btn").on("click", function (e) {
+      e.preventDefault();
+      $("#start").css({ "display": "none" });
+      $("body").addClass("bg");
+      setTimeout(function () {
+        $(".screen").css({ "display": "flex" });
+      }, 1000);
     });
-    /* 달력생성 */
-    function generateCalendar() {
-      const calendar = document.getElementById("calendar");
-      const calendarHeader = document.createElement("div");
-      calendarHeader.className = "calendar-header";
 
-      const prevMonth = document.createElement("div");
-      prevMonth.innerText = "<";
-      prevMonth.addEventListener("click", () => changeMonth(-1));
+    $(".quest-box").on("click", function () {
+      popOpen();
+    });
 
-      const nextMonth = document.createElement("div");
-      nextMonth.innerText = ">";
-      nextMonth.addEventListener("click", () => changeMonth(1));
+    $(".plus-box").on("click", function () {
+      popOpen();
+    });
+  });
 
-      const monthYear = document.createElement("div");
-      monthYear.id = "month-year";
+  // 진행률 업데이트
+  function updateProgress() {
+    let progressPercentage = (completedQuests / totalQuests) * 100;
+    $("#progress-bar").css("width", progressPercentage + "%");
+    $("#progress-text").text(`${progressPercentage.toFixed(2)}% (${completedQuests}/${totalQuests})`);
+  }
 
-      calendarHeader.appendChild(prevMonth);
-      calendarHeader.appendChild(monthYear);
-      calendarHeader.appendChild(nextMonth);
+  // 레벨업 처리
+  function levelUp() {
+    level += 1;
+    exp = 0;
+    expToNextLevel += 1;
+    $("#level").text(level);
+    updateExpBar();
+  }
 
-      calendar.appendChild(calendarHeader);
+  // 경험치 바 업데이트
+  function updateExpBar() {
+    var expPercentage = (exp / expToNextLevel) * 100;
+    $("#exp-bar").css("width", expPercentage + "%");
+  }
+  /* 달력을 위한 정보 */
+  document.addEventListener("DOMContentLoaded", function () {
+    generateCalendar();
+    updateCalendar();
+    renderAchievementChart();
+  });
+  /* 달력생성 */
+  function generateCalendar() {
+    const calendar = document.getElementById("calendar");
+    const calendarHeader = document.createElement("div");
+    calendarHeader.className = "calendar-header";
 
-      const calendarGrid = document.createElement("div");
-      calendarGrid.className = "calendar-grid";
-      calendarGrid.id = "calendar-grid";
+    const prevMonth = document.createElement("div");
+    prevMonth.innerText = "<";
+    prevMonth.addEventListener("click", () => changeMonth(-1));
 
-      calendar.appendChild(calendarGrid);
+    const nextMonth = document.createElement("div");
+    nextMonth.innerText = ">";
+    nextMonth.addEventListener("click", () => changeMonth(1));
 
-      updateCalendar();
+    const monthYear = document.createElement("div");
+    monthYear.id = "month-year";
+
+    calendarHeader.appendChild(prevMonth);
+    calendarHeader.appendChild(monthYear);
+    calendarHeader.appendChild(nextMonth);
+
+    calendar.appendChild(calendarHeader);
+
+    const calendarGrid = document.createElement("div");
+    calendarGrid.className = "calendar-grid";
+    calendarGrid.id = "calendar-grid";
+
+    calendar.appendChild(calendarGrid);
+
+    updateCalendar();
+  }
+  /* 달력 업데이트 */
+  function updateCalendar() {
+    const calendarGrid = document.getElementById("calendar-grid");
+    calendarGrid.innerHTML = "";
+
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    document.getElementById("month-year").innerText = `${currentYear}년 ${currentMonth + 1}월`;
+
+    for (let i = 0; i < firstDay; i++) {
+      const emptyDay = document.createElement("div");
+      emptyDay.className = "calendar-day";
+      calendarGrid.appendChild(emptyDay);
     }
-    /* 달력 업데이트 */
-    function updateCalendar() {
-      const calendarGrid = document.getElementById("calendar-grid");
-      calendarGrid.innerHTML = "";
 
-      const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
+    for (let i = 1; i <= lastDate; i++) {
+      const day = document.createElement("div");
+      day.className = "calendar-day";
+      day.innerText = i;
 
-      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-      const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-      document.getElementById("month-year").innerText = `${currentYear}년 ${currentMonth + 1}월`;
-
-      for (let i = 0; i < firstDay; i++) {
-        const emptyDay = document.createElement("div");
-        emptyDay.className = "calendar-day";
-        calendarGrid.appendChild(emptyDay);
-      }
-
-      for (let i = 1; i <= lastDate; i++) {
-        const day = document.createElement("div");
-        day.className = "calendar-day";
-        day.innerText = i;
-
-        // 목표 달성률에 따른 표시 업데이트
-        const completionRate = getCompletionRate(i);
-        if (completionRate >= 100) {
-          day.classList.add("circle");
-        } else if (completionRate >= 70) {
-          day.classList.add("triangle");
-        } else {
-          day.classList.add("cross");
-        }
-
-        calendarGrid.appendChild(day);
-      }
-    }
-    /* 달력변경 */
-    function changeMonth(offset) {
-      const now = new Date();
-      now.setMonth(now.getMonth() + offset);
-      updateCalendar();
-    }
-
-    function getCompletionRate(day) {
-      //  100을 반환하면 100% 달성, 70을 반환하면 70% 달성, 50을 반환하면 50% 달성.
-      // 현재는 임의의 값으로 테스트합니다.
-      if (day % 2 === 0) {
-        return 100; // 임시: 짝수 날은 100% 달성
-      } else if (day % 3 === 0) {
-        return 70; // 임시: 3의 배수 날은 70% 달성
+      // 목표 달성률에 따른 표시 업데이트
+      const completionRate = getCompletionRate(i);
+      if (completionRate >= 100) {
+        day.classList.add("circle");
+      } else if (completionRate >= 70) {
+        day.classList.add("triangle");
       } else {
-        return 50; // 임시: 그 외 날은 50% 달성
+        day.classList.add("cross");
       }
+
+      calendarGrid.appendChild(day);
     }
+  }
+  /* 달력변경 */
+  function changeMonth(offset) {
+    const now = new Date();
+    now.setMonth(now.getMonth() + offset);
+    updateCalendar();
+  }
 
-    // 최근 7일의 달성률 데이터를 사용하여 선 그래프 생성
-    function renderAchievementChart() {
-      const ctx = document.getElementById('achievementChart').getContext('2d');
-      const achievementData = getDailyAchievementData();
-      const labels = achievementData.map(data => data.date);
-      const data = achievementData.map(data => data.rate);
+  function getCompletionRate(day) {
+    
+    //100을 반환하면 100% 달성, 70을 반환하면 70% 달성, 50을 반환하면 50% 달성.
+    // 현재는 임의의 값
+    if (day % 2 === 0) {
+      return 100; // 임시: 짝수 날은 100% 달성
+    } else if (day % 3 === 0) {
+      return 70; // 임시: 3의 배수 날은 70% 달성
+    } else {
+      return 50; // 임시: 그 외 날은 50% 달성
+    }
+  }
 
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '일간 달성률',
-            data: data,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            fill: true,
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100
-            }
+  // 최근 7일의 달성률 데이터를 사용하여 선 그래프 생성
+  function renderAchievementChart() {
+    const ctx = document.getElementById('achievementChart').getContext('2d');
+    const achievementData = getDailyAchievementData();
+    const labels = achievementData.map(data => data.date);
+    const data = achievementData.map(data => data.rate);
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '일간 달성률',
+          data: data,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
           }
         }
-      });
+      }
+    });
+  }
+
+  // 최근 7일의 달성률 데이터를 반환하는 함수
+  function getDailyAchievementData() {
+  
+    // 현재는 임의의 데이터를 
+    const today = new Date();
+    const dates = [];
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      dates.push(date.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }));
     }
 
-    // 최근 7일의 달성률 데이터를 반환하는 함수
-    function getDailyAchievementData() {
-      // 실제 데이터를 반환하도록 수정해야 합니다.
-      // 현재는 임의의 데이터를 사용합니다.
-      const today = new Date();
-      const dates = [];
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        dates.push(date.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' }));
-      }
-
-      return [
-        { date: dates[0], rate: 90 },
-        { date: dates[1], rate: 85 },
-        { date: dates[2], rate: 70 },
-        { date: dates[3], rate: 60 },
-        { date: dates[4], rate: 80 },
-        { date: dates[5], rate: 75 },
-        { date: dates[6], rate: 95 }
-      ];
-    }
- // 로그아웃 처리
- $(".logout-text").on("click", function (e) {
-        e.preventDefault();
-        saveData();
-      });
-
-      function saveData() {
-        const updatedStats = {
-          level,
-          experience: exp,
-          expToNextLevel,
-          str: parseInt($('#str').text()),
-          dex: parseInt($('#dex').text()),
-          int: parseInt($('#int').text()),
-          luk: parseInt($('#luk').text())
-        };
-
-        const updatedQuests = {
-          totalQuests,
-          completedQuests,
-          currentQuestIndex: i,
-          entered_quests: quests.entered_quests,
-          completed_quests: quests.completed_quests,
-          quest_progress: quests.quest_progress
-        };
-
-        $.ajax({
-          url: '/data/logout',
-          type: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify({ stats: updatedStats, quests: updatedQuests }),
-          success: function (response) {
-            if (response.success) {
-              window.location.href = '/login';
-            } else {
-              alert('로그아웃 실패: ' + response.message);
-            }
-          },
-          error: function () {
-            alert('서버 오류가 발생했습니다.');
-          }
-        });
-      }
+    return [
+      { date: dates[0], rate: 90 },
+      { date: dates[1], rate: 85 },
+      { date: dates[2], rate: 70 },
+      { date: dates[3], rate: 60 },
+      { date: dates[4], rate: 80 },
+      { date: dates[5], rate: 75 },
+      { date: dates[6], rate: 95 }
+    ];
+  }
 
 
-  </script>
+
+</script>
 </body>
 
 </html>
